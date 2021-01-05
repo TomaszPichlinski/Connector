@@ -1,0 +1,54 @@
+{% load crispy_forms_tags %}
+{% block content_header %}
+
+    <p>
+        <a href="{% url 'upload' %}" class="btn btn-primary">Upload</a>
+    </p>
+{% endblock %}
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Cover</th>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Download</th>
+        <th>Delete</th>
+        <th>Connect</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for book in books %}
+        <tr>
+        <td>
+            {% if book.cover %}
+                <img src="{{ book.cover.url }}" alt="{{ book.title }}" style="width:100px; height:100px">
+            {% else %}
+                <span class="text-muted">No cover</span>
+            {% endif %}
+
+        </td>
+        <td> {{ book.title }}</td>
+        <td> {{ book.author }}</td>
+        <td>
+            <a href="{{ book.pdf.url }}" class="btn btn-primary btn-sm" target="_blank">
+                Download PDF
+            </a>
+        </td>
+        <td>
+            <form method="post" action="{% url 'delete' book.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+            </form>
+        </td>
+        <td>
+            <form method="post" enctype="multipart/form-data" action="{% url 'connect' book.pk %}">
+                {% csrf_token %}
+                <input type="file" name="myfile">
+                <button type="submit">Upload</button>
+            </form>
+        </td>
+    {% endfor %}
+    </tr>
+    </tbody>
+</table>
